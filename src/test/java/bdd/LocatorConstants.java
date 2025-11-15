@@ -1,4 +1,4 @@
-package framework;
+package bdd;
 
 public class LocatorConstants {
     public static final String PRECISE_TEXT_XPATH = "//*[text()='%s']";

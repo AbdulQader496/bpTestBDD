@@ -1,4 +1,4 @@
-package framework.pages;
+package bdd.pages;
 
 public enum MainPageNavigation {
     Privacy_Policy("Privacy");

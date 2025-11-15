@@ -1,9 +1,9 @@
-package framework.pages;
+package bdd.pages;
 
-import framework.LocatorConstants;
+import bdd.LocatorConstants;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
-import static framework.tests.BaseTest.driver;
+import static bdd.hooks.Hooks.driver;
 
 public class HomePage {
     private static final By SYSTOLIC_INPUT = By.id("BP_Systolic");

@@ -1,4 +1,4 @@
-package framework.utils;
+package bdd.utils;
 //package framework.utils;
 //
 //import lombok.experimental.UtilityClass;

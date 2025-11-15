@@ -1,9 +1,9 @@
-package framework.utils;
+package bdd.utils;
 
 
 import com.google.gson.Gson;
-import framework.models.Env;
-import framework.models.EnvData;
+import bdd.models.Env;
+import bdd.models.EnvData;
 import lombok.experimental.UtilityClass;
 
 import java.io.FileNotFoundException;

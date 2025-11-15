@@ -1,4 +1,4 @@
-package framework.models;
+package bdd.models;
 
 import lombok.Getter;
 
