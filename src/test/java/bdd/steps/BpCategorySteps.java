@@ -6,7 +6,7 @@ import bdd.pages.HomePage;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-public class BpCatagorySteps {
+public class BpCategorySteps {
     HomePage homePage = new HomePage();
 
 @When("I enter systolic value {string}")
@@ -22,7 +22,7 @@ public void click_submit() { homePage.clickSubmitButton(); }
 public void verify_category(String expected) {
 
     String result = homePage.getBPCategoryResult();
-    assertEquals(result, expected);
+    assertEquals(result, expected, "Wrong BP category displayed");
     // assert result.contains("Ideal Blood Pressure") : "Expected 'Ideal blood pressure' but got '" + result + "'";
     // String idealText = homePage.getIdealBPCategoryText();
     // assert idealText.equals("Blood Pressure Category: Ideal") : "Expected 'Ideal' but got '" + idealText + "'";

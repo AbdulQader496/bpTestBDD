@@ -6,7 +6,7 @@ import io.cucumber.testng.AbstractTestNGCucumberTests;
 import io.cucumber.testng.CucumberOptions;
 
 @CucumberOptions(
-        features = "src/test/java/bdd/features/BpCatagory.feature",
+        features = "src/test/java/bdd/features",
         glue = {"bdd.steps", "bdd.hooks"},
         plugin = {
                 "pretty",
@@ -18,7 +18,7 @@ import io.cucumber.testng.CucumberOptions;
 public class TestRunner extends AbstractTestNGCucumberTests {
 
     @Override
-    @DataProvider(parallel = true)
+    @DataProvider(parallel = false)
     public Object[][] scenarios() {
         return super.scenarios();
     }
