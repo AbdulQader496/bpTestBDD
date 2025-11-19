@@ -1,203 +1,157 @@
-# BpTestSelenium
+﻿# BpTestBDD
 
-A Selenium-based automated testing framework for web applications. This project is structured as a Maven project with TestNG and includes robust WebDriver management for local and CI environments.
+Automated BDD test suite for the Blood Pressure Calculator site. Scenarios are written in Gherkin, executed with Cucumber on top of TestNG, and automated through Selenium WebDriver + Page Object Model abstractions.
 
 ## Table of Contents
 
+- [Tech Stack](#tech-stack)
+- [Getting Started](#getting-started)
+- [Running the Suite](#running-the-suite)
 - [Project Structure](#project-structure)
-- [Prerequisites](#prerequisites)
-- [Setup](#setup)
-- [Running Tests](#running-tests)
 - [Configuration](#configuration)
-- [Architecture](#architecture)
+- [Feature Coverage](#feature-coverage)
+- [Reporting](#reporting)
+- [Extending the Suite](#extending-the-suite)
+
+---
+
+## Tech Stack
+
+- Java 21
+- Maven 3.6+
+- Selenium 4.27 (WebDriver + Selenium Manager)
+- Cucumber JVM 7.15 with TestNG runner
+- WebDriverManager 5.4 for ChromeDriver provisioning
+- Gson/Lombok for lightweight data loading
+
+---
+
+## Getting Started
+
+1. **Install prerequisites**
+   - Oracle/OpenJDK 21 (`java -version`)
+   - Maven (`mvn -version`)
+   - Latest Chrome browser
+
+2. **Clone the repository**
+   ```bash
+   git clone https://github.com/<your-org>/BpTestBDD.git
+   cd BpTestBDD
+   ```
+
+3. **Download dependencies / build once**
+   ```bash
+   mvn clean install
+   ```
+   This resolves Maven dependencies and validates the project compiles.
+
+---
+
+## Running the Suite
+
+Run every Gherkin scenario (default `bdd.runners.TestRunner`):
+
+```bash
+mvn test
+```
+
+Filter execution if needed:
+
+```bash
+# Run only one feature file
+mvn test -Dcucumber.options="--name 'Privacy Policy'"
+
+# Tag-based filtering (add @tag to scenarios)
+mvn test -Dcucumber.filter.tags="@smoke"
+```
+
+Maven Surefire automatically launches the TestNG runner; no IDE-specific plugins are required. Reports land in `target`.
 
 ---
 
 ## Project Structure
 
 ```
-BpTestSelenium/
-├── src/
-│   ├── main/
-│   │   ├── java/
-│   │   │   └── framework/
-│   │   │       ├── LocatorConstants.java      # XPath and locator templates
-│   │   │       ├── models/                    # Data models (Env, EnvData, UserData, etc.)
-│   │   │       ├── pages/                     # Page Object Model classes
-│   │   │       └── utils/                     # Utility classes (FileUtil, StringUtils, etc.)
-│   │   └── resources/
-│   │       ├── env.json                       # Environment selection (prod/dev)
-│   │       └── prodenv.json                   # Production environment config
-│   └── test/
-│       └── java/
-│           └── framework/
-│               └── tests/                     # Test classes (BaseTest, CheckBoxesTest, etc.)
-├── target/                                    # Build output (auto-generated)
-├── pom.xml                                    # Maven configuration
-├── .gitignore                                 # Git ignore rules
-└── README.md                                  # This file
+src/
+├── main/
+│   └── resources/
+│       ├── env.json          # Selects active environment (prod, etc.)
+│       └── prodenv.json      # Host/protocol/wait configuration
+└── test/
+    └── java/bdd
+        ├── features/         # Gherkin feature files
+        ├── hooks/            # WebDriver lifecycle hooks
+        ├── models/           # POJOs for environment data
+        ├── pages/            # Page Object classes
+        ├── runners/          # TestNG+Cucumber runner
+        ├── steps/            # Step definitions
+        └── utils/            # Helpers (settings, file utils, etc.)
 ```
+
+Key classes:
+- `bdd.pages.HomePage` & `PrivacyPolicyPage`: encapsulate UI actions/locators.
+- `bdd.steps.*`: glue between Gherkin steps and page actions.
+- `bdd.hooks.Hooks`: initializes ChromeDriver via WebDriverManager, loads the configured host, and closes the driver after each scenario.
 
 ---
 
-## Prerequisites
+## Configuration
 
-### Required
-- **Java JDK 21** or higher
-- **Maven 3.6.0** or higher
-- **Chrome browser** (latest version recommended)
+Environment selection lives under `src/main/resources`.
 
-### Optional (for WebDriver management)
-- WebDriverManager is included in the POM; it automatically downloads matching ChromeDriver
-
-### Verify Installation
-
-```powershell
-java -version
-mvn -version
-```
-
----
-
-## Setup
-
-### 1. Clone the Repository
-
-```powershell
-git clone https://github.com/AbdulQader496/bpTestSelenium.git
-cd bpTestSelenium
-```
-
-### 2. Install Dependencies
-
-Maven will automatically download all required dependencies on the first build:
-
-```powershell
-mvn clean install
-```
-
-### 3. Environment Configuration
-
-Edit `src/main/resources/prodenv.json` to point to your target website:
-
-```json
-{
-  "protocol": "https",
-  "domain": "the-internet.herokuapp.com",
-  "wait": 10
-}
-```
-
-- `protocol`: HTTP or HTTPS
-- `domain`: Target website domain (do not include protocol)
-- `wait`: Implicit wait timeout (seconds)
-
-Select the environment in `src/main/resources/env.json`:
-
+`env.json`
 ```json
 {
   "env": "prod"
 }
 ```
 
----
-
-## Running Tests
-
-### Run All Tests
-
-```powershell
-mvn test
-```
-
-### Run a Specific Test Class
-
-```powershell
-mvn -Dtest=CheckBoxesTest test
-```
-
-### Run a Specific Test Method
-
-```powershell
-mvn -Dtest=CheckBoxesTest#checkBox1test test
-```
-
-### Run Tests with Verbose Output
-
-```powershell
-mvn -Dtest=CheckBoxesTest test -X
-```
-
-### Run Tests in Headless Mode (CI/Local)
-
-To run tests in headless Chrome (useful for CI pipelines):
-
-```powershell
-mvn test -Dchrome.headless=true
-```
-
-> **Note**: Headless mode support requires updating `BaseTest` to accept the property (see Configuration section).
-
----
-
-## Configuration
-
-### BaseTest Class
-
-The `BaseTest` class handles WebDriver initialization and teardown:
-
-```java
-@BeforeMethod
-public void setup() {
-    WebDriverManager.chromedriver().setup();  // Auto-manages ChromeDriver
-    driver = new ChromeDriver();
-    driver.get(SettingsTestData.getEnvData().getHost());
-    driver.manage().window().maximize();
-}
-
-@AfterMethod
-public void teardown() {
-    if (driver != null) {
-        driver.quit();
-    }
+`prodenv.json`
+```json
+{
+  "protocol": "https",
+  "domain": "example-bp-calculator.com",
+  "wait": 10
 }
 ```
 
-### WebDriverManager
-
-WebDriverManager automatically:
-- Downloads the correct ChromeDriver version for your installed Chrome browser
-- Manages driver caching to avoid re-downloads
-- Works seamlessly in local and CI environments
-
-### Dependencies (pom.xml)
-
-Key dependencies:
-- **Selenium**: `org.seleniumhq.selenium:selenium-java:4.27.0`
-- **WebDriverManager**: `io.github.bonigarcia:webdrivermanager:5.4.1`
-- **TestNG**: `org.testng:testng:7.1.0` (test framework)
-- **Lombok**: `org.projectlombok:lombok:1.18.36` (code generation)
-- **GSON**: `com.google.code.gson:gson:2.11.0` (JSON parsing)
+`SettingsTestData` loads `env.json`, then the matching `<env>env.json` file into `EnvData`. `EnvData#getHost()` builds the base URL (e.g., `https://example-bp-calculator.com`). Update those files to point the tests at a different deployment.
 
 ---
 
-## Architecture
+## Feature Coverage
 
-### Page Object Model (POM)
+Current scenarios live in `src/test/java/bdd/features`:
+- `BpCategory.feature`: verifies calculator output for Low/Ideal/Pre-High/High categories.
+- `Validation.feature`: asserts validation messaging for values outside the allowed range and for mismatched systolic/diastolic inputs.
+- `PrivacyPolicyPage.feature`: ensures the footer link navigates to the Privacy Policy page and that the heading matches.
+- `FooterText.feature`: checks footer copy and the privacy link on both the home page and the policy page.
 
-Tests follow the Page Object Model pattern for maintainability:
+Add new `.feature` files here and glue them through the `bdd.steps` package.
 
-- **HomePage** — Base page with common navigation methods
-- **CheckBoxesPage** — Test-specific page with element locators
-- **MainPageNavigation** — Enum for navigation link labels
+---
 
-### Locator Strategy
+## Reporting
 
-Locators are centralized in `LocatorConstants.java`:
+Cucumber plugins configured in `bdd.runners.TestRunner` generate:
+- `target/cucumber-report.html` – human-readable HTML summary.
+- `target/cucumber.json` – machine-readable report for CI pipelines.
+- Console `pretty` output.
 
-```java
-public static final String PRECISE_TEXT_XPATH = "//*[text()='%s']";
-public static final String PARTICULAR_TEXT_XPATH = "//*[contains(text(),'%s')]";
+You can feed the JSON into dashboards like Allure or publish the HTML artifact directly from CI.
+
+---
+
+## Extending the Suite
+
+1. Model new UI behavior inside a Page Object (or extend `HomePage`).
+2. Describe the scenario in a `.feature` file using Gherkin.
+3. Implement matching step definitions under `bdd.steps`.
+4. Re-run `mvn test` to validate.
+
+Because WebDriver setup is centralized in Hooks, additional scenarios automatically reuse the same lifecycle and configuration.
+
+Happy testing!
 ```
 
 ### Test Structure
