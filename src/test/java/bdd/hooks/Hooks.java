@@ -3,6 +3,7 @@ package bdd.hooks;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import java.time.Duration;
 
 import bdd.utils.SettingsTestData;
 import io.cucumber.java.After;
@@ -34,6 +35,7 @@ public class Hooks {
         driver = new ChromeDriver(options);
 
         driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         driver.get(SettingsTestData.getEnvData().getHost());
     }
 
