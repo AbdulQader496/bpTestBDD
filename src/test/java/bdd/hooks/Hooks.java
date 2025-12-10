@@ -23,11 +23,8 @@ public class Hooks {
         if (isCI) {
             System.out.println("Running in GitHub Actions - enabling headless mode");
 
-            options.addArguments("--headless=new");
             options.addArguments("--no-sandbox");
             options.addArguments("--disable-dev-shm-usage");
-            options.addArguments("--disable-gpu");
-            options.addArguments("--disable-extensions");
             options.addArguments("--remote-allow-origins=*");
             options.addArguments("--window-size=1920,1080");
         }
