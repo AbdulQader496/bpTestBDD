@@ -2,8 +2,11 @@ package bdd.pages;
 
 import bdd.LocatorConstants;
 import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import static bdd.hooks.Hooks.driver;
+
+import java.time.Duration;
 
 public class HomePage {
     private static final By SYSTOLIC_INPUT = By.id("BP_Systolic");
@@ -44,6 +47,7 @@ public class HomePage {
         driver.findElement(SUBMIT_BUTTON).click();
     }
     public String getBPCategoryResult() {
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         return driver.findElement(BP_CATEGORY_RESULT).getText();
     }
     public String getIdealBPCategoryText() {
@@ -65,9 +69,11 @@ public class HomePage {
         return driver.findElement(FOOTER_COPYRIGHT).getText();
     }
     public String getSystolicValueValidationText() {
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         return driver.findElement(SYSTOLIC_VALUE_VALIDATION).getText();
     }  
     public String getDiastolicValueValidationText() {
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
         return driver.findElement(DIASTOLIC_VALUE_VALIDATION).getText();
     }
     public String getValueGreaterValidationText() {
