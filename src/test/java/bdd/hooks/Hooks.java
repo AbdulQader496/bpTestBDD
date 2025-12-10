@@ -21,7 +21,7 @@ public class Hooks {
         boolean isCI = System.getenv("GITHUB_ACTIONS") != null;
 
         if (isCI) {
-            System.out.println("Running in GitHub Actions - enabling headless mode");
+            // System.out.println("Running in GitHub Actions - enabling headless mode");
 
             options.addArguments("--no-sandbox");
             options.addArguments("--disable-dev-shm-usage");
