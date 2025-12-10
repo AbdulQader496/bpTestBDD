@@ -4,6 +4,9 @@ import bdd.LocatorConstants;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
 import static bdd.hooks.Hooks.driver;
 
 import java.time.Duration;
@@ -47,7 +50,7 @@ public class HomePage {
         driver.findElement(SUBMIT_BUTTON).click();
     }
     public String getBPCategoryResult() {
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.presenceOfElementLocated(BP_CATEGORY_RESULT));
         return driver.findElement(BP_CATEGORY_RESULT).getText();
     }
     public String getIdealBPCategoryText() {
@@ -69,11 +72,13 @@ public class HomePage {
         return driver.findElement(FOOTER_COPYRIGHT).getText();
     }
     public String getSystolicValueValidationText() {
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        // driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.presenceOfElementLocated(SYSTOLIC_VALUE_VALIDATION));
         return driver.findElement(SYSTOLIC_VALUE_VALIDATION).getText();
     }  
     public String getDiastolicValueValidationText() {
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        // driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(5));
+        new WebDriverWait(driver, Duration.ofSeconds(5)).until(ExpectedConditions.presenceOfElementLocated(DIASTOLIC_VALUE_VALIDATION));
         return driver.findElement(DIASTOLIC_VALUE_VALIDATION).getText();
     }
     public String getValueGreaterValidationText() {
